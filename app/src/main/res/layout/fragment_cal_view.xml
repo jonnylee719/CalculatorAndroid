@@ -1,0 +1,172 @@
+<RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:tools="http://schemas.android.com/tools" android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    tools:context="com.simplea.jonnylee.calculator.CalViewFragment"
+
+    >
+
+    <TextView
+        android:id="@+id/displayView"
+        android:layout_width="fill_parent"
+        android:layout_height="229dp"
+        android:layout_alignParentTop="true"
+        android:padding="5dp"
+        android:text= "?attr/actionBarSize"
+        android:layout_marginTop="@dimen/abc_action_bar_default_height_material"
+        />
+
+    <LinearLayout
+        android:layout_width="fill_parent"
+        android:layout_height="fill_parent"
+        android:layout_below="@+id/displayView"
+        android:orientation="vertical">
+
+            <RelativeLayout
+                android:id="@+id/buttonLayer741"
+                android:layout_width="wrap_content"
+                android:layout_height="fill_parent">
+
+                <ImageButton
+                    android:id="@+id/button7"
+                    android:layout_width="101dp"
+                    android:layout_height="101dp"
+                    android:background="@drawable/seven"
+                    />
+
+                <ImageButton
+                    android:id="@+id/button4"
+                    android:layout_width="101dp"
+                    android:layout_height="101dp"
+                    android:background="@drawable/four"
+                    />
+
+                <ImageButton
+                    android:id="@+id/button1"
+                    android:layout_width="101dp"
+                    android:layout_height="101dp"
+                    android:background="@drawable/one"
+                    />
+
+                <ImageButton
+                    android:id="@+id/buttonEmp"
+                    android:layout_width="101dp"
+                    android:layout_height="101dp"
+                    />
+
+            </RelativeLayout>
+
+            <RelativeLayout
+                android:id="@+id/buttonLayer8520"
+                android:layout_width="wrap_content"
+                android:layout_height="fill_parent">
+
+                <ImageButton
+                    android:id="@+id/button8"
+                    android:layout_width="101dp"
+                    android:layout_height="101dp"
+                    android:background="@drawable/eight"
+                    />
+
+                <ImageButton
+                    android:id="@+id/button5"
+                    android:layout_width="101dp"
+                    android:layout_height="101dp"
+                    android:background="@drawable/five"
+                    />
+
+                <ImageButton
+                    android:id="@+id/button2"
+                    android:layout_width="101dp"
+                    android:layout_height="101dp"
+                    android:background="@drawable/two"
+                    />
+
+                <ImageButton
+                    android:id="@+id/button0"
+                    android:layout_width="101dp"
+                    android:layout_height="101dp"
+                    android:background="@drawable/zero"
+                    />
+
+            </RelativeLayout>
+
+            <RelativeLayout
+                android:id="@+id/buttonLayer963"
+                android:layout_width="wrap_content"
+                android:layout_height="fill_parent">
+
+                <ImageButton
+                    android:id="@+id/button9"
+                    android:layout_width="101dp"
+                    android:layout_height="101dp"
+                    android:background="@drawable/nine"
+                    />
+
+                <ImageButton
+                    android:id="@+id/button6"
+                    android:layout_width="101dp"
+                    android:layout_height="101dp"
+                    android:background="@drawable/six"
+                    />
+
+                <ImageButton
+                    android:id="@+id/button3"
+                    android:layout_width="101dp"
+                    android:layout_height="101dp"
+                    android:background="@drawable/three"
+                    />
+
+                <ImageButton
+                    android:id="@id/buttonEmp"
+                    android:layout_width="101dp"
+                    android:layout_height="101dp"
+                    />
+
+            </RelativeLayout>
+
+            <RelativeLayout
+                android:id="@+id/buttonLayerOper"
+                android:layout_width="wrap_content"
+                android:layout_height="fill_parent">
+
+                <ImageButton
+                    android:id="@+id/buttonAdd"
+                    android:layout_width="101dp"
+                    android:layout_height="101dp"
+                    android:background="@drawable/add"
+                    />
+
+                <ImageButton
+                    android:id="@+id/buttonSub"
+                    android:layout_width="101dp"
+                    android:layout_height="101dp"
+                    android:background="@drawable/subtract"
+                    />
+
+                <ImageButton
+                    android:id="@+id/buttonMul"
+                    android:layout_width="101dp"
+                    android:layout_height="101dp"
+                    android:background="@drawable/multiply"
+                    />
+
+                <ImageButton
+                    android:id="@+id/buttonDiv"
+                    android:layout_width="101dp"
+                    android:layout_height="101dp"
+                    android:background="@drawable/divide"
+                    />
+
+                <ImageButton
+                    android:layout_width="101dp"
+                    android:layout_height="101dp"
+                    android:background="@drawable/equal"/>
+
+            </RelativeLayout>
+
+
+    </LinearLayout>
+
+
+
+</RelativeLayout>
