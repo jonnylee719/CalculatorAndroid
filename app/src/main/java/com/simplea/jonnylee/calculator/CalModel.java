@@ -1,5 +1,7 @@
 package com.simplea.jonnylee.calculator;
 
+import java.math.BigDecimal;
+
 /**
  * CalModel.java
  * Purpose: Model for the Calculator android app. Stores total and manipulates total.
@@ -9,42 +11,41 @@ package com.simplea.jonnylee.calculator;
 
 public class CalModel {
     private static final int INITIAL_VALUE = 0;
-    private int total;
+    private BigDecimal total;
 
     public CalModel(){
         reset();
     }
 
     public void reset(){
-        total = INITIAL_VALUE;
+        total = BigDecimal.valueOf(INITIAL_VALUE);
     }
 
     public String getTotal(){
-        String retValue = total + "";
-        return retValue;
+        return total.toString();
     }
 
     public void setTotal(String in){
-        total = Integer.parseInt(in);
+        total = new BigDecimal(in);
     }
 
     public void add(String in){
-        int operand = Integer.parseInt(in);
-        total = total + operand;
+        BigDecimal augend = new BigDecimal(in);
+        total = total.add(augend);
     }
 
     public void subtract(String in){
-        int operand = Integer.parseInt(in);
-        total = total - operand;
+        BigDecimal subtrahend = new BigDecimal(in);
+        total = total.subtract(subtrahend);
     }
 
     public void multiply(String in){
-        int operand = Integer.parseInt(in);
-        total = total * operand;
+        BigDecimal multiplicand = new BigDecimal(in);
+        total = total.subtract(multiplicand);
     }
 
     public void divide(String in){
-        int operand = Integer.parseInt(in);
-        total = total / operand;
+        BigDecimal divisor = new BigDecimal(in);
+        total = total.divide(divisor);
     }
 }

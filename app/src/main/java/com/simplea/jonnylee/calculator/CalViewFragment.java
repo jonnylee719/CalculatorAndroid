@@ -95,9 +95,12 @@ public class CalViewFragment extends Fragment {
      */
     public interface OnFragmentInteractionListener {
         // TODO: Update argument type and name
-        public void onFragmentInteraction(Uri uri);
-        public void numButClicked(Uri uri);
-        public void operButClicked(Uri uri);
+        void onFragmentInteraction(Uri uri);
+        void numButClicked(View button);
+        void operButClicked(View button);
+        void cancelButClicked(View button);
+        void equalButClicked(View button);
     }
+
 
 }

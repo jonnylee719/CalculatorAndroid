@@ -1,0 +1,13 @@
+<resources>
+
+    <color name="cyan_light">#66b9b9</color>
+    <color name="cyan">#008b8b</color>
+
+    <!-- Material design palette -->
+    <color name="orange_red">#ff5722</color>
+    <color name="grey_metalic">#9e9e9e</color>
+    <color name="cyan_dark">#607d8b</color>
+    <color name="black">#000000</color>
+    <color name="white">#ffffff</color>
+
+</resources>
