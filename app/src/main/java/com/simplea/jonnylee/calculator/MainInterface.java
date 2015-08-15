@@ -19,7 +19,10 @@ import android.view.View;
 import android.widget.Button;
 import android.widget.TextView;
 
+import java.math.BigDecimal;
+import java.text.DecimalFormat;
 import java.text.NumberFormat;
+import java.util.Locale;
 
 
 public class MainInterface extends AppCompatActivity implements CalViewFragment.OnFragmentInteractionListener{
@@ -34,8 +37,10 @@ public class MainInterface extends AppCompatActivity implements CalViewFragment.
     private String num2 = "";
     private String crtOper;
     private String result = "";
+    private int decimalPlace = 2;
 
     private NumberFormat nf = NumberFormat.getInstance();
+    private DecimalFormat numberFormat;
 
     //States that the controller can be in:
     //0 = no number entered yet
@@ -63,6 +68,7 @@ public class MainInterface extends AppCompatActivity implements CalViewFragment.
             getSupportFragmentManager().beginTransaction().add(R.id.fragment_container, firstFragment).commit();
             firstFragment.onAttach(this);
         }
+        setNumFormatter();
         Log.d(TAG, "Set up firstfragment");
 
     }
@@ -98,21 +104,20 @@ public class MainInterface extends AppCompatActivity implements CalViewFragment.
 
     }
 
+    private void setNumFormatter(){
+        numberFormat = new DecimalFormat("#,###.#####");
+    }
+
     private String formatNum(String s){
+        Log.d(TAG, "string s = "+s);
         String formattedString = "";
         if(s.equals("")){
             return s;
         }
-        if(s.length() > 9){
-            long num = Long.parseLong(s);
-            formattedString = s.format("%,d", num);
 
-        }
-        else if(s.length() <= 9) {
-            int num = Integer.parseInt(s);
-            formattedString = s.format("%,d", num);
-
-        }
+        BigDecimal bd = new BigDecimal(s);
+        formattedString = numberFormat.format(bd);
+        Log.d(TAG, "num after formatting : " + formattedString);
         return formattedString;
     }
 
@@ -175,6 +180,7 @@ public class MainInterface extends AppCompatActivity implements CalViewFragment.
             if(!result.equals("")){
                 num1 = result;
                 num1Entered = true;
+                model.setTotal(num1);
                 display.setText(formatNum(num1));
                 operButClicked(view);
             }
@@ -184,6 +190,7 @@ public class MainInterface extends AppCompatActivity implements CalViewFragment.
         }
         else if(operEntered == false){
             if(num1Entered == true){
+                model.setTotal(num1);
                 crtOper = butTop;
                 operEntered = true;
                 display.setText(formatNum(num1) + crtOper);
@@ -194,6 +201,7 @@ public class MainInterface extends AppCompatActivity implements CalViewFragment.
                     result = "";
                     crtOper = butTop;
                     operEntered = true;
+                    model.setTotal(num1);
                     display.setText(formatNum(num1) + crtOper);
                 }
                 else if(result.equals("")){
@@ -257,28 +265,32 @@ public class MainInterface extends AppCompatActivity implements CalViewFragment.
         String rlt = null;
         if(operator.equals("+")){
             //Log.d(TAG, "at doOperation for addition");
-            model.setTotal(num1);
+            //model.setTotal(num1);
             model.add(num2);
             rlt = model.getTotal();
+            Log.d(TAG, "addition result = " + rlt);
         }
         else if(operator.equals("-")){
-            model.setTotal(num1);
+            //model.setTotal(num1);
             model.subtract(num2);
             rlt = model.getTotal();
+            Log.d(TAG, "subtraction result = " + rlt);
         }
         else if(operator.equals("/")){
-            model.setTotal(num1);
+            //model.setTotal(num1);
             model.divide(num2);
             rlt = model.getTotal();
+            Log.d(TAG, "division result = " + rlt);
         }
         //if(crtOper.equals("")), for some reason cannot get crtOper to equal to
         // so solved problem by the logic that if it's not other operators
         // it must be the multiplication operator
-        else{
+        else if(operator.equals("*")){
             //Log.d(TAG, "at doOperation for multiplication");
-            model.setTotal(num1);
+            //model.setTotal(num1);
             model.multiply(num2);
             rlt = model.getTotal();
+            Log.d(TAG, "multiplication result = " + rlt);
         }
         num1 = "";
         num2 = "";
