@@ -15,7 +15,7 @@
         android:layout_weight="1"
         android:textSize="50sp"
         android:gravity="bottom|right"
-        android:text=""
+        android:text="0"
         android:layout_marginTop="?attr/actionBarSize" />
     
     <RelativeLayout
@@ -29,6 +29,14 @@
             android:layout_height="fill_parent"
             android:orientation="vertical"
             android:layout_alignParentLeft="true">
+
+            <Button
+                android:layout_width="fill_parent"
+                android:layout_height="0dp"
+                android:layout_weight="1"
+                android:textSize="30sp"
+                android:background="@color/cyan_dark"
+                />
 
             <Button
                 android:layout_width="fill_parent"
@@ -85,6 +93,14 @@
                 android:layout_width="fill_parent"
                 android:layout_height="0dp"
                 android:layout_weight="1"
+                android:textSize="30sp"
+                android:background="@color/cyan_dark"
+                />
+
+            <Button
+                android:layout_width="fill_parent"
+                android:layout_height="0dp"
+                android:layout_weight="1"
                 android:text="8"
                 android:textSize="30sp"
                 android:textColor="@color/white"
@@ -135,6 +151,17 @@
             android:orientation="vertical"
             android:layout_toRightOf="@id/butLayer2"
             android:background="@color/cyan_dark">
+
+            <Button
+                android:layout_width="fill_parent"
+                android:layout_height="0dp"
+                android:layout_weight="1"
+                android:text="+/-"
+                android:textSize="30sp"
+                android:textColor="@color/white"
+                android:background="@color/cyan_dark"
+                android:onClick="negButClicked"
+                />
 
             <Button
                 android:layout_width="fill_parent"
@@ -216,7 +243,7 @@
                 android:layout_width="fill_parent"
                 android:layout_height="0dp"
                 android:layout_weight="1"
-                android:text="×"
+                android:text="*"
                 android:textSize="30sp"
                 android:textColor="@color/white"
                 android:background="@color/cyan_dark"

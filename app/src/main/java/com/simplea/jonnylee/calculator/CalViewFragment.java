@@ -100,6 +100,7 @@ public class CalViewFragment extends Fragment {
         void operButClicked(View button);
         void cancelButClicked(View button);
         void equalButClicked(View button);
+        void negButClicked(View button);
     }
 
 

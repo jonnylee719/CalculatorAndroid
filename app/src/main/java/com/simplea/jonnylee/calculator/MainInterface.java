@@ -34,8 +34,10 @@ public class MainInterface extends AppCompatActivity implements CalViewFragment.
 
     //Controller variables for all the calculations
     private String num1 = "";
+    private boolean negNum1 = false;
     private String num2 = "";
-    private String crtOper;
+    private boolean negNum2 = false;
+    private String crtOper = "";
     private String result = "";
     private int decimalPlace = 2;
 
@@ -69,8 +71,6 @@ public class MainInterface extends AppCompatActivity implements CalViewFragment.
             firstFragment.onAttach(this);
         }
         setNumFormatter();
-        Log.d(TAG, "Set up firstfragment");
-
     }
 
     protected CalViewFragment createFragment(){
@@ -108,27 +108,31 @@ public class MainInterface extends AppCompatActivity implements CalViewFragment.
         numberFormat = new DecimalFormat("#,###.#####");
     }
 
-    private String formatNum(String s){
-        Log.d(TAG, "string s = "+s);
+    private String formatNum(String numIn, boolean neg){
+        //This method only does not make any changes to the value of the number
         String formattedString = "";
-        if(s.equals("")){
-            return s;
+        if(numIn.equals("")){
+            if(neg == true){
+                formattedString = "-" + "";
+            }
+            return formattedString;
         }
-
-        BigDecimal bd = new BigDecimal(s);
+        formattedString = numIn;
+        if(neg == true){
+            formattedString = "-" + formattedString;
+        }
+        BigDecimal bd = new BigDecimal(formattedString);
         formattedString = numberFormat.format(bd);
-        Log.d(TAG, "num after formatting : " + formattedString);
         return formattedString;
     }
 
     @Override
     public void numButClicked(View view) {
+        TextView display = (TextView) findViewById(R.id.displayView);
+
         // Gets the number from the clicked button and assigned to local variable butTop
         Button clickedButton = (Button) view;
         String butTop = clickedButton.getText()+"";
-
-        // Assigns display textview in CalViewFragment
-        TextView display = (TextView) findViewById(R.id.displayView);
 
         //2 Scenarios:
         //a) operEntered == false, still inputing num1
@@ -136,130 +140,120 @@ public class MainInterface extends AppCompatActivity implements CalViewFragment.
 
         if(operEntered==false){
             if(num1Entered == false){
-                display.setText(butTop);
-                if(butTop.equals("0")){}
-                else{
-                    num1 = butTop;
-                    num1Entered = true;
-                }
+                num1 = butTop;
+                num1Entered = true;
             }
             else if(num1Entered == true){
-                num1 = num1 + butTop;
-                display.setText(formatNum(num1));
-
+                if(num1.equals("0")){
+                    num1 = butTop;
+                }
+                else {
+                    num1 = num1 + butTop;
+                }
             }
+            display.setText(formatNum(num1, negNum1));
         }
         else if(operEntered == true){
             if(num2Entered == false){
-                display.setText(formatNum(num1) + crtOper + butTop);
-                if(butTop.equals("0")){}
-                else{
-                    num2Entered = true;
-                    num2 = butTop;
-                }
+                num2 = butTop;
+                num2Entered = true;
             }
             else if(num2Entered == true){
-                num2 = num2 + butTop;
-                display.setText(formatNum(num1) + crtOper + formatNum(num2));
+                if(num2.equals("0")){
+                    num2 = butTop;
+                }
+                else {
+                    num2 = num2 + butTop;
+                }
             }
+            display.setText(formatNum(num1, negNum1) + crtOper + formatNum(num2, negNum2));
         }
     }
 
     @Override
     public void operButClicked(View view) {
-        // Gets the number from the clicked button and assigned to local variable butTop
-        Button clickedButton = (Button) view;
-        String butTop = clickedButton.getText()+"";
-        Log.d(TAG, "butTop equals " + butTop);
-
-        // Assigns display textview in CalViewFragment
         TextView display = (TextView) findViewById(R.id.displayView);
 
-        if(display.getText().equals("")){
-            Log.d(TAG, "display.getText == nothing");
-            if(!result.equals("")){
-                num1 = result;
-                num1Entered = true;
-                model.setTotal(num1);
-                display.setText(formatNum(num1));
-                operButClicked(view);
-            }
-            else {
-                display.setText("");
-            }
-        }
-        else if(operEntered == false){
-            if(num1Entered == true){
+        // Gets the number from the clicked button and assigned to local variable butTop
+        Button clickedButton = (Button) view;
+        String butTop = clickedButton.getText() + "";
+
+        if (operEntered == false) {
+            if (num1Entered == true) {
                 model.setTotal(num1);
                 crtOper = butTop;
                 operEntered = true;
-                display.setText(formatNum(num1) + crtOper);
+                display.setText(formatNum(num1, negNum1) + crtOper);
             }
-            else if(num1Entered == false){
-                if(!result.equals("")){
-                    num1 = result;
-                    result = "";
-                    crtOper = butTop;
-                    operEntered = true;
+            else if (num1Entered == false) {
+                if (!result.equals("")) {
+                    if (result.indexOf("-") != -1) {      //means result is negative
+                        negNum1 = true;
+                        num1 = result.substring(1);
+                    } else {                              //result is positive
+                        num1 = result;
+                    }
+                    num1Entered = true;
                     model.setTotal(num1);
-                    display.setText(formatNum(num1) + crtOper);
-                }
-                else if(result.equals("")){
-                        display.setText("");
+                    display.setText(formatNum(num1, negNum1) + crtOper);
+                } else {
+                    display.setText("0");
                 }
             }
-        }
-        else if(operEntered == true){
-            if(num2 == ""){
+        }  // operEntered == false
+        else if (operEntered == true) {
+            if (num2Entered == false) {
                 crtOper = butTop;
-                display.setText(formatNum(num1) + crtOper);
             }
-            else{
+            else if (num2Entered == true) {
                 result = doOperation(crtOper);
                 //Treat result as num1
-                num1 = result;
+                if (result.indexOf("-") != -1) {      //means result is negative
+                    negNum1 = true;
+                    num1 = result.substring(1);
+                }
+                else {                              //result is positive
+                    num1 = result;
+                }
                 num1Entered = true;
+
                 //Change the crtOper to the button pressed
                 crtOper = butTop;
                 operEntered = true;
-                display.setText(formatNum(num1) + crtOper);
             }
-        }
-
+            display.setText(formatNum(num1, negNum1) + crtOper + formatNum(num2, negNum2));
+        } //operEntered == true
     }
 
     @Override
     public void equalButClicked(View button){
-        //Get display
         TextView display = (TextView) findViewById(R.id.displayView);
-
         if(operEntered == true){
             if(num2Entered == true){
                 result = doOperation(crtOper);
-                display.setText(formatNum(result));
             }
             else if(num2Entered == false){
                 operEntered = false;
                 equalButClicked(button);
             }
+            display.setText(formatNum(result, false));
         }
         else if(operEntered == false){
             if(num1Entered == false){
                 if(!result.equals("")){
-                    display.setText(formatNum(result));
                 }
                 else{
-                    display.setText("");
                 }
             }
             else if(num1Entered == true){
                 result = num1;
                 num1 = "";
                 num1Entered = false;
-                display.setText(formatNum(result));
             }
+            display.setText(formatNum(num1, negNum1));
         }
     }
+
 
     public String doOperation(String operator){
         String rlt = null;
@@ -298,61 +292,92 @@ public class MainInterface extends AppCompatActivity implements CalViewFragment.
         operEntered = false;
         num1Entered = false;
         num2Entered = false;
+        negNum1 = false;
+        negNum2 = false;
         return rlt;
     }
 
     public void cancelButClicked(View view){
-        // Assigns display textview in CalViewFragment
         TextView display = (TextView) findViewById(R.id.displayView);
-
+        int length = 0;
         if(operEntered == true){
             if(num2Entered == true){
-                int length = num2.length();
-                num2 = num2.substring(0, (length - 1));
-                // if the entire num2 is deleted then num2Entered should be false
-                if(num2.length() == 0){
-                    num2Entered = false;
-                    display.setText(formatNum(num1) + crtOper);
+                int decimalPosition = num2.indexOf('.');
+                length = num2.length();
+                if(length < 2){
+                    num2 = num2.substring(0, (length-1));
                 }
-                else {
-                    display.setText(formatNum(num1) + crtOper + formatNum(num2));
-                }
-            }
-            else if(num2Entered == false){
-                crtOper = "";
-                operEntered = false;
-                display.setText(formatNum(num1));
-            }
-        }
-        else if(operEntered == false){
-            if(num1Entered == true){
-                int length = num1.length();
-                num1 = num1.substring(0, (length-1));
-                // if the entire num1 is deleted then num1Entered should be false
-                if(num1.length() == 0){
-                    num1Entered = false;
-                    display.setText("");
+                else if((length-2) == decimalPosition){
+                    num2 = num2.substring(0, (length-2));
                 }
                 else{
-                    display.setText(formatNum(num1));
+                    num2 = num2.substring(0, (length-1));
+                }
+                if(num2.length() == 0){  //all of num2 has been deleted
+                    num2Entered = false;
+                }
+                display.setText(formatNum(num1, negNum1) + crtOper + formatNum(num2, negNum2));
+            } //end of num2 entered
+            else if(num2Entered == false){
+                if(negNum2 == true){
+                    negNum2 = false;
+                    display.setText(formatNum(num1, negNum1) + crtOper);
+                }
+                else if(negNum2 == false){
+                    crtOper = "";
+                    operEntered = false;
+                    display.setText(formatNum(num1, negNum1));
                 }
             }
-            else if(result != ""){
-                    int length = result.length();
-                    result = result.substring(0, (length-1));
-                    // if the entire result is deleted
-                    if(result.length() == 0){
-                        display.setText("");
-                    }
-                    else{
-                        display.setText(formatNum(result));
-                    }
-            }
-            else if(display.getText().equals("")){
-                    display.setText("");
+        } //end of operEntered == true
+        else if(operEntered == false) {
+            if(num1Entered == true){
+                int decimalPosition = num1.indexOf('.');
+                length = num1.length();
+                if(length < 2){
+                    num1 = num1.substring(0, (length-1));
+                }
+                else if((length-2) == decimalPosition){
+                    num1 = num1.substring(0, (length-2));
+                }
+                else{
+                    num1 = num1.substring(0, (length-1));
+                }
+                display.setText(formatNum(num1, negNum1));
+                if(num1.length() == 0){  //all of num1 has been deleted
+                    num1Entered = false;
+                    display.setText("0");
+                }
+            } //end of num1 entered
+            else if(num1Entered == false){
+                if(negNum1 == true){
+                    negNum1 = false;
+                }
+                else if(!result.equals("")){
+                    result = "";
+                }
+                display.setText("0");
             }
         }
-
-
     }
+
+    @Override
+    public void negButClicked(View button){
+        TextView display = (TextView) findViewById(R.id.displayView);
+        if(operEntered == false){
+            if(num1Entered == false){
+                negNum1 = !negNum1;
+                display.setText(formatNum(num1, negNum1));
+            }
+            else{}
+        }
+        else if(operEntered == true){
+            if(num2Entered == false){
+                negNum2 = !negNum2;
+                display.setText(formatNum(num1, negNum1) + crtOper + formatNum(num2, negNum2));
+            }
+            else{}
+        }
+    }
+
 }

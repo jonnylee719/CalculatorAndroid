@@ -1,6 +1,9 @@
 package com.simplea.jonnylee.calculator;
 
+import android.util.Log;
+
 import java.math.BigDecimal;
+import java.math.RoundingMode;
 
 /**
  * CalModel.java
@@ -12,6 +15,7 @@ import java.math.BigDecimal;
 public class CalModel {
     private static final int INITIAL_VALUE = 0;
     private BigDecimal total;
+    private String TAG = "CalModel";
 
     public CalModel(){
         reset();
@@ -27,6 +31,7 @@ public class CalModel {
 
     public void setTotal(String in){
         total = new BigDecimal(in);
+        Log.d(TAG, "set Total to: " + total);
     }
 
     public void add(String in){
@@ -41,11 +46,11 @@ public class CalModel {
 
     public void multiply(String in){
         BigDecimal multiplicand = new BigDecimal(in);
-        total = total.subtract(multiplicand);
+        total = total.multiply(multiplicand);
     }
 
     public void divide(String in){
         BigDecimal divisor = new BigDecimal(in);
-        total = total.divide(divisor);
+        total = total.divide(divisor, 5, RoundingMode.HALF_UP);
     }
 }
