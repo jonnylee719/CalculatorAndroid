@@ -21,7 +21,6 @@ import android.widget.TextView;
 
 import java.math.BigDecimal;
 import java.text.DecimalFormat;
-import java.text.NumberFormat;
 import java.util.Locale;
 
 
@@ -39,10 +38,8 @@ public class MainInterface extends AppCompatActivity implements CalViewFragment.
     private boolean negNum2 = false;
     private String crtOper = "";
     private String result = "";
-    private int decimalPlace = 2;
 
-    private NumberFormat nf = NumberFormat.getInstance();
-    private DecimalFormat numberFormat;
+    private DecimalFormat numberFormatter;
 
     //States that the controller can be in:
     //0 = no number entered yet
@@ -66,15 +63,30 @@ public class MainInterface extends AppCompatActivity implements CalViewFragment.
                 return;
             }
 
-            firstFragment = createFragment();
+            createFragment();
             getSupportFragmentManager().beginTransaction().add(R.id.fragment_container, firstFragment).commit();
             firstFragment.onAttach(this);
         }
         setNumFormatter();
     }
 
-    protected CalViewFragment createFragment(){
-        return CalViewFragment.newInstance(fragmentParem1, fragmentParem2);
+    protected void createFragment(){
+        firstFragment = CalViewFragment.newInstance(fragmentParem1, fragmentParem2);
+    }
+
+    @Override
+    public void onLongClick(){
+        TextView display = (TextView) findViewById(R.id.displayView);
+
+        num1 = "";
+        num1Entered = false;
+        negNum1 = false;
+        num2 = "";
+        num2Entered = false;
+        negNum2 = false;
+        crtOper = "";
+        operEntered = false;
+        display.setText("0");
     }
 
     @Override
@@ -105,7 +117,9 @@ public class MainInterface extends AppCompatActivity implements CalViewFragment.
     }
 
     private void setNumFormatter(){
-        numberFormat = new DecimalFormat("#,###.#####");
+        numberFormatter = new DecimalFormat();
+        numberFormatter.setMaximumFractionDigits(9);
+        numberFormatter.setMaximumIntegerDigits(9);
     }
 
     private String formatNum(String numIn, boolean neg){
@@ -118,11 +132,43 @@ public class MainInterface extends AppCompatActivity implements CalViewFragment.
             return formattedString;
         }
         formattedString = numIn;
-        if(neg == true){
-            formattedString = "-" + formattedString;
+        if(numIn.contains(".")) {                          //it is a fraction number
+            int dp = numIn.indexOf(".");
+            if(numIn.substring(0, (dp-1)).length() > 10){
+                /*BigDecimal bd = new BigDecimal(numIn);
+                numberFormatter.applyPattern("#.#####E0");
+                formattedString = numberFormatter.format(bd);
+                */
+                String.format(",10e", formattedString);
+                Log.d(TAG, "number expressed as Exponential: " + formattedString);
+            }
+            else if(numIn.substring(dp, numIn.length()).length() > 10){
+                int zeroAfterDp = 0;
+                for(int i = 0; i< numIn.length(); i++){
+                    if(numIn.charAt(i+dp) == '0'){
+                        zeroAfterDp++;
+                    }
+                    else{
+                        break;
+                    }
+                }
+                if(zeroAfterDp > 4){
+                    /*BigDecimal bd = new BigDecimal(numIn);
+                    numberFormatter.applyPattern("#.#####E0");
+                    formattedString = numberFormatter.format(bd);
+                    */
+                    String.format(",10g", formattedString);
+                    Log.d(TAG, "number expressed as Exponential: " + formattedString);
+                }
+            }
+            else if(numIn.substring(dp).length() > 10){
+                formattedString = numIn.substring(0, (dp + 10));
+                String.format(",10g", formattedString);
+            }
+            else if(!numIn.contains(".")){
+                String.format(",10d", formattedString);
+            }
         }
-        BigDecimal bd = new BigDecimal(formattedString);
-        formattedString = numberFormat.format(bd);
         return formattedString;
     }
 
@@ -134,36 +180,69 @@ public class MainInterface extends AppCompatActivity implements CalViewFragment.
         Button clickedButton = (Button) view;
         String butTop = clickedButton.getText()+"";
 
-        //2 Scenarios:
-        //a) operEntered == false, still inputing num1
-        //b) operEntered == true, meaning it's at num2
+        //4 Scenarios:
+        //a) before/ after num1Entered
+        //b) before/ after num2Entered
 
-        if(operEntered==false){
-            if(num1Entered == false){
+        if(!operEntered) {
+            if (!num1Entered) {
+                result = ""; //might be straight after the last operation
                 num1 = butTop;
                 num1Entered = true;
-            }
-            else if(num1Entered == true){
-                if(num1.equals("0")){
+            } else if (num1Entered) {
+                if (num1.equals("0")) {
                     num1 = butTop;
-                }
-                else {
-                    num1 = num1 + butTop;
+                } else {
+                    if(num1.indexOf(".") != -1){
+                        int dp = num1.indexOf(".");                 //the position of the decimal point
+                        String fractionPart = num1.substring(dp);
+                        if(fractionPart.length() > 10){             //10 digits after the decimal point is the limit of num1
+                            //do Nothing
+                        }
+                        else{
+                            num1 = num1 + butTop;                   //appends the butTop
+                        }
+                    }
+                    else {                                          // not a fraction number
+                        if(num1.length()>10){
+                            //do Nothing
+                        }
+                        else {
+                            num1 = num1 + butTop;
+                        }
+                    }
                 }
             }
             display.setText(formatNum(num1, negNum1));
         }
-        else if(operEntered == true){
-            if(num2Entered == false){
+        else if(operEntered){               //oper has been entered
+            if(!num2Entered){               //first check if num1 has been entered
                 num2 = butTop;
                 num2Entered = true;
             }
-            else if(num2Entered == true){
+            else if(num2Entered){                          //num2 has been entered
                 if(num2.equals("0")){
                     num2 = butTop;
                 }
-                else {
-                    num2 = num2 + butTop;
+                else{
+                    if(num2.indexOf(".") != -1){
+                        int dp = num2.indexOf(".");                 //the position of the decimal point
+                        String fractionPart = num2.substring(dp);
+                        if(fractionPart.length() > 10){             //10 digits after the decimal point is the limit of num
+                            //do Nothing
+                        }
+                        else{
+                            num2 = num2 + butTop;                   //appends the butTop
+                        }
+                    }
+                    else {                                          // not a fraction number
+                        if(num2.length()>10){
+                            //do Nothing
+                        }
+                        else {
+                            num2 = num2 + butTop;
+                        }
+                    }
                 }
             }
             display.setText(formatNum(num1, negNum1) + crtOper + formatNum(num2, negNum2));
@@ -178,114 +257,164 @@ public class MainInterface extends AppCompatActivity implements CalViewFragment.
         Button clickedButton = (Button) view;
         String butTop = clickedButton.getText() + "";
 
-        if (operEntered == false) {
-            if (num1Entered == true) {
-                model.setTotal(num1);
-                crtOper = butTop;
-                operEntered = true;
-                display.setText(formatNum(num1, negNum1) + crtOper);
+        // 3 scenarios: 1) num1Entered is false
+        //              2) operEntered is false
+        //              3) operEntered is true
+
+        if(!num1Entered){           // check for result
+            if(negNum1){
+                //do Nothing
             }
-            else if (num1Entered == false) {
-                if (!result.equals("")) {
-                    if (result.indexOf("-") != -1) {      //means result is negative
-                        negNum1 = true;
-                        num1 = result.substring(1);
-                    } else {                              //result is positive
-                        num1 = result;
-                    }
-                    num1Entered = true;
-                    model.setTotal(num1);
-                    display.setText(formatNum(num1, negNum1) + crtOper);
-                } else {
-                    display.setText("0");
-                }
-            }
-        }  // operEntered == false
-        else if (operEntered == true) {
-            if (num2Entered == false) {
-                crtOper = butTop;
-            }
-            else if (num2Entered == true) {
-                result = doOperation(crtOper);
-                //Treat result as num1
-                if (result.indexOf("-") != -1) {      //means result is negative
+            else if(!result.equals("")){        //result contains something
+                if(result.indexOf("-") == 0){   //result is negative
                     negNum1 = true;
                     num1 = result.substring(1);
                 }
-                else {                              //result is positive
+                else{
                     num1 = result;
                 }
                 num1Entered = true;
-
-                //Change the crtOper to the button pressed
+                result = "";
                 crtOper = butTop;
                 operEntered = true;
+                display.setText(formatNum(num1, negNum1) + crtOper);
+            } // end of !result
+        }
+        else if(num1Entered && !operEntered){
+            if(num1.indexOf(".") == num1.length()){
+                num1 = num1.substring(0, (num1.length() - 1));     //if dp is at the end of num1
             }
-            display.setText(formatNum(num1, negNum1) + crtOper + formatNum(num2, negNum2));
-        } //operEntered == true
+            crtOper = butTop;
+            operEntered = true;
+            display.setText(formatNum(num1, negNum1) + crtOper);
+        }
+        else if(operEntered) {           //there's 2 scenarios: 1) num2 not entered, so just switch the oper around, 2) num2 entered, doOperation() and treat as above
+            if (!num2Entered) {
+                if (negNum2) {
+                } else {
+                    crtOper = butTop;
+                    display.setText(formatNum(num1, negNum1) + crtOper);
+                }
+            } else if (num2Entered) {
+                if (num2.indexOf(".") == num2.length()) {
+                    num2 = num2.substring(0, (num2.length() - 1));
+                }
+                result = doOperation(crtOper);
+                if (result.indexOf("-") == 0) {
+                    negNum1 = true;
+                    num1 = result.substring(1);
+                } else {                      //result is positive
+                    num1 = result;
+                }
+                num1Entered = true;
+                result = "";
+                operButClicked(view);       //reloop as if this is a new operButClicked
+            }
+        }
     }
 
     @Override
     public void equalButClicked(View button){
         TextView display = (TextView) findViewById(R.id.displayView);
-        if(operEntered == true){
-            if(num2Entered == true){
-                result = doOperation(crtOper);
+        //4 scenarios:
+        //1) before num1Entered
+        //2) after num1Entered + before operEntered
+        //3) after operEntered + before num2Entered
+        //4) after num2Entered
+
+        if(!num1Entered){
+            // do nothing because if it's showing result, you dont need to do anything
+        }
+        else if(num1Entered && !operEntered){
+            if(num1.indexOf(".") == num1.length()){
+                num1 = num1.substring(0, (num1.length() - 1));
             }
-            else if(num2Entered == false){
-                operEntered = false;
-                equalButClicked(button);
-            }
+            result = num1;
+            num1 = "";
+            num1Entered = false;
             display.setText(formatNum(result, false));
         }
-        else if(operEntered == false){
-            if(num1Entered == false){
-                if(!result.equals("")){
+        else if(operEntered && !num2Entered){
+            if(negNum2){}
+            else{
+                if(negNum1){
+                    result = "-" + num1;
                 }
-                else{
-                }
-            }
-            else if(num1Entered == true){
                 result = num1;
-                num1 = "";
                 num1Entered = false;
+                display.setText(formatNum(result, false));
             }
-            display.setText(formatNum(num1, negNum1));
+        }
+        else if(num2Entered){
+            if(num2.indexOf(".") == num2.length()){
+                num2 = num2.substring(0, (num2.length() - 1));
+            }
+            result = doOperation(crtOper);
+            display.setText(formatNum(result, false));
         }
     }
 
+    private String negNumConvert(String num, boolean neg){
+        if(neg){
+            num = "-" + num;
+        }
+        return num;
+    }
 
     public String doOperation(String operator){
         String rlt = null;
+        model.setTotal(negNumConvert(num1, negNum1));
+        switch (operator){
+            case "+":
+                model.add(negNumConvert(num2, negNum2));
+                Log.d(TAG, "addition result = " + rlt);
+                break;
+            case "-":
+                model.subtract(negNumConvert(num2, negNum2));
+                Log.d(TAG, "subtraction result = " + rlt);
+                break;
+            case "*":
+                model.multiply(negNumConvert(num2, negNum2));
+                Log.d(TAG, "multiplication result = " + rlt);
+                break;
+            case "/":
+                model.divide(negNumConvert(num2, negNum2));
+                Log.d(TAG, "division result = " + rlt);
+                break;
+            default:
+                break;
+        }
+        rlt = model.getTotal();
+
+        /*
         if(operator.equals("+")){
             //Log.d(TAG, "at doOperation for addition");
-            //model.setTotal(num1);
-            model.add(num2);
+            model.setTotal(negNumConvert(num1, negNum1));
+            model.add(negNumConvert(num2, negNum2));
             rlt = model.getTotal();
             Log.d(TAG, "addition result = " + rlt);
         }
         else if(operator.equals("-")){
-            //model.setTotal(num1);
-            model.subtract(num2);
+            model.setTotal(negNumConvert(num1, negNum1));
+            model.subtract(negNumConvert(num2, negNum2));
             rlt = model.getTotal();
             Log.d(TAG, "subtraction result = " + rlt);
         }
         else if(operator.equals("/")){
-            //model.setTotal(num1);
-            model.divide(num2);
+            model.setTotal(negNumConvert(num1, negNum1));
+            model.divide(negNumConvert(num2, negNum2));
             rlt = model.getTotal();
             Log.d(TAG, "division result = " + rlt);
         }
-        //if(crtOper.equals("")), for some reason cannot get crtOper to equal to
-        // so solved problem by the logic that if it's not other operators
-        // it must be the multiplication operator
         else if(operator.equals("*")){
             //Log.d(TAG, "at doOperation for multiplication");
-            //model.setTotal(num1);
-            model.multiply(num2);
+            model.setTotal(negNumConvert(num1, negNum1));
+            model.multiply(negNumConvert(num2, negNum2));
             rlt = model.getTotal();
             Log.d(TAG, "multiplication result = " + rlt);
         }
+
+        */
         num1 = "";
         num2 = "";
         crtOper = "";
@@ -299,64 +428,75 @@ public class MainInterface extends AppCompatActivity implements CalViewFragment.
 
     public void cancelButClicked(View view){
         TextView display = (TextView) findViewById(R.id.displayView);
-        int length = 0;
-        if(operEntered == true){
-            if(num2Entered == true){
-                int decimalPosition = num2.indexOf('.');
-                length = num2.length();
-                if(length < 2){
+
+        //4 scenarios:
+        //1) before num1Entered
+        //2) after num1Entered + before operEntered
+        //3) after operEntered + before num2Entered
+        //4) after num2Entered
+
+        if(!num1Entered){
+            onLongClick();          //deletes everything and setDisplay to "0"
+        }
+        else if(num1Entered && !operEntered){
+            if(num1.length() > 20){                         //Length of textview limits the number of digits the user can see
+                num1 = num1.substring(0, 20);
+            }
+            int decimalPosition = num1.indexOf(".");        //check if it's a fraction number
+            int length = num1.length();
+            if(decimalPosition == -1){                      //not a fraction number
+                num1 = num1.substring(0, (length -1));
+            }
+            else if(decimalPosition != -1) {                 //is a fraction number
+                if (decimalPosition == (length - 1)) {
+                    num1 = num1.substring(0, (length - 2));
+                } else {
+                    num1 = num1.substring(0, (length - 1));
+                }// end of decimal position != -1
+            }
+            if(num1.length() == 0){
+                num1 = "";
+                num1Entered = false;
+                negNum1 = false;
+                display.setText("0");
+            }
+            else{                                           //num1 still exists
+                display.setText(formatNum(num1, negNum1));
+            }
+        }
+        else if(operEntered && !num2Entered){
+            if(negNum2){
+                negNum2 = false;
+                display.setText(formatNum(num1, negNum1) + crtOper);
+            }
+            else {
+                crtOper = "";
+                operEntered = false;
+                display.setText(formatNum(num1, negNum1));
+            }
+        }
+        else if(num2Entered){
+            int decimalPosition = num2.indexOf(".");
+            int length = num2.length();
+            if(decimalPosition == -1){
+                num2 = num2.substring(0, (length-1));
+            }
+            else if(decimalPosition != -1){
+                if(decimalPosition == (length-1)){
+                    num2 = num2.substring(0, length-2);
+                }
+                else {
                     num2 = num2.substring(0, (length-1));
-                }
-                else if((length-2) == decimalPosition){
-                    num2 = num2.substring(0, (length-2));
-                }
-                else{
-                    num2 = num2.substring(0, (length-1));
-                }
-                if(num2.length() == 0){  //all of num2 has been deleted
-                    num2Entered = false;
-                }
-                display.setText(formatNum(num1, negNum1) + crtOper + formatNum(num2, negNum2));
-            } //end of num2 entered
-            else if(num2Entered == false){
-                if(negNum2 == true){
-                    negNum2 = false;
-                    display.setText(formatNum(num1, negNum1) + crtOper);
-                }
-                else if(negNum2 == false){
-                    crtOper = "";
-                    operEntered = false;
-                    display.setText(formatNum(num1, negNum1));
                 }
             }
-        } //end of operEntered == true
-        else if(operEntered == false) {
-            if(num1Entered == true){
-                int decimalPosition = num1.indexOf('.');
-                length = num1.length();
-                if(length < 2){
-                    num1 = num1.substring(0, (length-1));
-                }
-                else if((length-2) == decimalPosition){
-                    num1 = num1.substring(0, (length-2));
-                }
-                else{
-                    num1 = num1.substring(0, (length-1));
-                }
+            if(num2.length() == 0){
+                num2 = "";
+                num2Entered = false;
+                negNum2 = false;
                 display.setText(formatNum(num1, negNum1));
-                if(num1.length() == 0){  //all of num1 has been deleted
-                    num1Entered = false;
-                    display.setText("0");
-                }
-            } //end of num1 entered
-            else if(num1Entered == false){
-                if(negNum1 == true){
-                    negNum1 = false;
-                }
-                else if(!result.equals("")){
-                    result = "";
-                }
-                display.setText("0");
+            }
+            else{                                               //num2 still exists
+                display.setText(formatNum(num1, negNum1) + crtOper + formatNum(num2, negNum2));
             }
         }
     }
@@ -364,19 +504,50 @@ public class MainInterface extends AppCompatActivity implements CalViewFragment.
     @Override
     public void negButClicked(View button){
         TextView display = (TextView) findViewById(R.id.displayView);
-        if(operEntered == false){
-            if(num1Entered == false){
-                negNum1 = !negNum1;
-                display.setText(formatNum(num1, negNum1));
+        if(!num1Entered){
+            if(!negNum1){
+                negNum1 = true;
             }
-            else{}
+            else{
+                negNum1 = false;
+            }
+            result = ""; //this might be straight after last operation
+            display.setText(formatNum(num1, negNum1));
         }
-        else if(operEntered == true){
-            if(num2Entered == false){
-                negNum2 = !negNum2;
-                display.setText(formatNum(num1, negNum1) + crtOper + formatNum(num2, negNum2));
+        else if(!num2Entered && operEntered){
+            if(!negNum2){
+                negNum2 = true;
             }
-            else{}
+            else{
+                negNum2 = false;
+            }
+            display.setText(formatNum(num1, negNum1) + crtOper + formatNum(num2, negNum2));
+        }
+    }
+
+    @Override
+    public void dpButClicked(View button){
+        TextView display = (TextView) findViewById(R.id.displayView);
+
+        if(!operEntered){
+            if(!num1Entered){
+                num1 = "0.";
+                num1Entered = true;
+            }
+            else if(num1Entered){
+                num1 = num1 + ".";
+            }
+            display.setText(formatNum(num1, negNum1));
+        }
+        else if(operEntered){
+            if(!num2Entered){
+                num2 = "0.";
+                num2Entered = true;
+            }
+            else if(num2Entered){
+                num2 = num2 + ".";
+            }
+            display.setText(formatNum(num2, negNum2));
         }
     }
 
