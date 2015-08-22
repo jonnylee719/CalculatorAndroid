@@ -20,6 +20,7 @@ import android.widget.Button;
 import android.widget.TextView;
 
 import java.math.BigDecimal;
+import java.math.RoundingMode;
 import java.text.DecimalFormat;
 import java.util.Locale;
 
@@ -118,8 +119,6 @@ public class MainInterface extends AppCompatActivity implements CalViewFragment.
 
     private void setNumFormatter(){
         numberFormatter = new DecimalFormat();
-        numberFormatter.setMaximumFractionDigits(9);
-        numberFormatter.setMaximumIntegerDigits(9);
     }
 
     private String formatNum(String numIn, boolean neg){
@@ -132,43 +131,27 @@ public class MainInterface extends AppCompatActivity implements CalViewFragment.
             return formattedString;
         }
         formattedString = numIn;
+        if(neg)
+            formattedString = "-" + numIn;
+        BigDecimal bd = new BigDecimal(formattedString);
         if(numIn.contains(".")) {                          //it is a fraction number
-            int dp = numIn.indexOf(".");
-            if(numIn.substring(0, (dp-1)).length() > 10){
-                /*BigDecimal bd = new BigDecimal(numIn);
-                numberFormatter.applyPattern("#.#####E0");
+           // numberFormatter.applyPattern("#,###.");
+            formattedString = bd.setScale(5, RoundingMode.HALF_UP).toString();
+        }
+        else {
+            bd = bd.setScale(9);
+            String temp = bd.toString();
+            if(temp.contains("E")){
+                numberFormatter.applyPattern("0.####E0");
                 formattedString = numberFormatter.format(bd);
-                */
-                String.format(",10e", formattedString);
-                Log.d(TAG, "number expressed as Exponential: " + formattedString);
             }
-            else if(numIn.substring(dp, numIn.length()).length() > 10){
-                int zeroAfterDp = 0;
-                for(int i = 0; i< numIn.length(); i++){
-                    if(numIn.charAt(i+dp) == '0'){
-                        zeroAfterDp++;
-                    }
-                    else{
-                        break;
-                    }
-                }
-                if(zeroAfterDp > 4){
-                    /*BigDecimal bd = new BigDecimal(numIn);
-                    numberFormatter.applyPattern("#.#####E0");
-                    formattedString = numberFormatter.format(bd);
-                    */
-                    String.format(",10g", formattedString);
-                    Log.d(TAG, "number expressed as Exponential: " + formattedString);
-                }
-            }
-            else if(numIn.substring(dp).length() > 10){
-                formattedString = numIn.substring(0, (dp + 10));
-                String.format(",10g", formattedString);
-            }
-            else if(!numIn.contains(".")){
-                String.format(",10d", formattedString);
+            else{
+                numberFormatter.setDecimalSeparatorAlwaysShown(false);
+                numberFormatter.applyPattern("#,###");
+                formattedString = numberFormatter.format(bd);
             }
         }
+
         return formattedString;
     }
 
