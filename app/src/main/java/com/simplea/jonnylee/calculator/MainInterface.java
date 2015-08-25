@@ -73,12 +73,25 @@ public class MainInterface extends AppCompatActivity implements CalViewFragment.
         setNumFormatter();
     }
 
+    @Override
+    protected void onStart(){
+        super.onStart();
+        Button delBut = (Button) findViewById(R.id.delBut);
+        delBut.setOnLongClickListener(new View.OnLongClickListener() {
+            @Override
+            public boolean onLongClick(View v) {
+                onLongClickDel();
+                return true;
+            }
+        });
+    }
+
     protected void createFragment(){
         firstFragment = CalViewFragment.newInstance(fragmentParem1, fragmentParem2);
     }
 
     @Override
-    public void onLongClick(){
+    public void onLongClickDel(){
         TextView display = (TextView) findViewById(R.id.displayView);
 
         num1 = "";
@@ -419,6 +432,8 @@ public class MainInterface extends AppCompatActivity implements CalViewFragment.
                 }
                 result = num1;
                 num1Entered = false;
+                crtOper = "";
+                operEntered = false;
                 display.setText(formatNum(result, false));
                 scrollDisplayToEnd();
             }
@@ -441,7 +456,6 @@ public class MainInterface extends AppCompatActivity implements CalViewFragment.
     }
 
     public String doOperation(String operator){
-        String rlt = null;
         model.setTotal(negNumConvert(num1, negNum1));
         switch (operator){
             case "+":
@@ -459,7 +473,7 @@ public class MainInterface extends AppCompatActivity implements CalViewFragment.
             default:
                 break;
         }
-        rlt = model.getTotal();
+        String rlt = model.getTotal();
         Log.d(TAG, operator.toString() + " operation equals " + rlt);
 
         num1 = "";
@@ -483,7 +497,7 @@ public class MainInterface extends AppCompatActivity implements CalViewFragment.
         //4) after num2Entered
 
         if(!num1Entered){
-            onLongClick();          //deletes everything and setDisplay to "0"
+            onLongClickDel();          //deletes everything and setDisplay to "0"
         }
         else if(num1Entered && !operEntered){
             if(num1.length() > 20){                         //Length of textview limits the number of digits the user can see
