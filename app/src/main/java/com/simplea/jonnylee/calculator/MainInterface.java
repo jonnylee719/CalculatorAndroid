@@ -8,9 +8,12 @@
 
 package com.simplea.jonnylee.calculator;
 
+import android.app.Fragment;
 import android.net.Uri;
 import android.os.Bundle;
 import android.support.v4.app.FragmentActivity;
+import android.support.v4.app.FragmentManager;
+import android.support.v4.app.FragmentTransaction;
 import android.support.v7.app.AppCompatActivity;
 import android.util.Log;
 import android.view.Menu;
@@ -27,20 +30,25 @@ import java.text.DecimalFormat;
 import java.util.Locale;
 
 
-public class MainInterface extends AppCompatActivity implements CalViewFragment.OnFragmentInteractionListener{
+public class MainInterface extends AppCompatActivity implements CalViewFragment.OnFragmentInteractionListener, CalHistoryFragment.OnFragmentInteractionListener{
     private static String fragmentParem1="";
     private static String fragmentParem2="";
     private CalViewFragment firstFragment;
+    private CalHistoryFragment calHistoryFragment;
     private CalModel model;
+    private CalHistory calHis;
     private static final String TAG = "MainInterface";
 
     //Controller variables for all the calculations
     private String num1 = "";
     private boolean negNum1 = false;
+    private String formattedNum1;
     private String num2 = "";
     private boolean negNum2 = false;
+    private String formattedNum2;
     private String crtOper = "";
     private String result = "";
+    private String formattedResult;
 
     private DecimalFormat numberFormatter;
 
@@ -60,15 +68,17 @@ public class MainInterface extends AppCompatActivity implements CalViewFragment.
         setContentView(R.layout.activity_main_interface);
 
         model = new CalModel();
+        calHis = CalHistory.get(getApplicationContext());
 
-        if(findViewById(R.id.fragment_container) != null){
+        if(findViewById(R.id.fragment_container_CalView) != null){
             if (savedInstanceState != null){
                 return;
             }
 
             createFragment();
-            getSupportFragmentManager().beginTransaction().add(R.id.fragment_container, firstFragment).commit();
+            getSupportFragmentManager().beginTransaction().add(R.id.fragment_container_CalView, firstFragment).commit();
             firstFragment.onAttach(this);
+
         }
         setNumFormatter();
     }
@@ -195,6 +205,16 @@ public class MainInterface extends AppCompatActivity implements CalViewFragment.
             }
         }
 
+        if(numIn.equals(num1)){
+            formattedNum1 = formattedString;
+        }
+        else if(numIn.equals(num2)){
+            formattedNum2 = formattedString;
+        }
+        else if(numIn.equals(result)){
+            formattedResult = formattedString;
+        }
+
         return formattedString;
 
     }
@@ -202,7 +222,7 @@ public class MainInterface extends AppCompatActivity implements CalViewFragment.
     private String formatInputNum(String num, boolean neg){
         String formattedString = "";
         if (num.equals("") || num.equals("0.") || num.equals("0")) {
-            if (neg == true) {
+            if (neg) {
                 formattedString = "-" + num;
             }
             else {
@@ -211,9 +231,6 @@ public class MainInterface extends AppCompatActivity implements CalViewFragment.
             return formattedString;
         }
         formattedString = num;
-        if(neg){
-            formattedString = "-" + num;
-        }
 
         int dpPosition = formattedString.length();
         String fracPart = "";
@@ -242,11 +259,35 @@ public class MainInterface extends AppCompatActivity implements CalViewFragment.
 
         formattedString = formattedIntPart + fracPart;
 
+        if(neg){
+            formattedString = "-" + formattedString;
+        }
+
+        if(num.equals(num1)){
+            formattedNum1 = formattedString;
+        }
+        else if(num.equals(num2)){
+            formattedNum2 = formattedString;
+        }
+        else if(num.equals(result)){
+            formattedResult = formattedString;
+        }
+
         return formattedString;
     }
 
     private void scrollDisplayToEnd(){
         final HorizontalScrollView scrollView = (HorizontalScrollView) findViewById(R.id.horizontalScrollView);
+        scrollView.post(new Runnable() {
+            @Override
+            public void run() {
+                scrollView.fullScroll(View.FOCUS_RIGHT);
+            }
+        });
+    }
+
+    private void scrollEquationDisplayToEnd(){
+        final HorizontalScrollView scrollView = (HorizontalScrollView) findViewById(R.id.equationHorizontalScrollView);
         scrollView.post(new Runnable() {
             @Override
             public void run() {
@@ -474,7 +515,15 @@ public class MainInterface extends AppCompatActivity implements CalViewFragment.
                 break;
         }
         String rlt = model.getTotal();
-        Log.d(TAG, operator.toString() + " operation equals " + rlt);
+
+        formattedNum1 = formatNum(num1, negNum1);
+        formattedNum2 = formatNum(num2, negNum2);
+        formattedResult = formatNum(rlt, false);
+
+        displayLastEquatView();
+
+        //Add operation to calHis
+        calHis.addEquation(negNumConvert(num1, negNum1), formattedNum1, negNumConvert(num2, negNum2), formattedNum2, result, formattedResult, crtOper);
 
         num1 = "";
         num2 = "";
@@ -615,4 +664,27 @@ public class MainInterface extends AppCompatActivity implements CalViewFragment.
         }
     }
 
+    @Override
+    public void openCalHistoryFragment(View view) {
+        FragmentManager fragmentManager = getSupportFragmentManager();
+        FragmentTransaction fragmentTransaction = fragmentManager.beginTransaction();
+
+        calHistoryFragment = new CalHistoryFragment();
+        fragmentTransaction.replace(R.id.fragment_container_CalView, calHistoryFragment);
+        fragmentTransaction.addToBackStack(null);
+        fragmentTransaction.setTransition(FragmentTransaction.TRANSIT_NONE);
+        fragmentTransaction.commit();
+    }
+
+    public void displayLastEquatView(){
+        TextView lastEquatView = (TextView) findViewById(R.id.lastEquatView);
+        String lastEquation = formattedNum1 + " " + crtOper + " " + formattedNum2;
+        lastEquatView.setText(lastEquation);
+        scrollEquationDisplayToEnd();
+    }
+
+    @Override
+    public void onFragmentInteraction(String id) {
+
+    }
 }

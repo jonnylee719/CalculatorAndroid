@@ -1,4 +1,4 @@
-<LinearLayout 
+<LinearLayout
     xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:tools="http://schemas.android.com/tools" 
     
@@ -8,39 +8,54 @@
     android:orientation="vertical"
     >
 
-
     <HorizontalScrollView
+        android:id="@+id/equationHorizontalScrollView"
         android:layout_width="fill_parent"
         android:layout_height="0dp"
-        android:layout_weight="1">
+        android:layout_weight="0.25"
+        android:weightSum = "1"
+        android:fillViewport="true"
+        android:scrollbars="none">
 
-        <LinearLayout
+        <TextView
+            android:id="@+id/lastEquatView"
             android:layout_width="match_parent"
+            android:layout_height="match_parent"
+            android:textSize="25sp"
+            android:gravity="right|bottom"
+            android:paddingRight="15dp"
+            android:paddingLeft="15dp"
+            android:onClick="openCalHistoryFragment"
+        />
+    </HorizontalScrollView>
+
+    <!-- for margin can be 5dp -->
+    <HorizontalScrollView
+        android:id="@+id/horizontalScrollView"
+        android:layout_width="fill_parent"
+        android:layout_height="wrap_content"
+        android:fillViewport="true"
+        android:layout_margin="5dp"
+        android:scrollbars="none">
+
+        <TextView
+            android:id="@+id/displayView"
+            android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            android:orientation="vertical"
-            android:gravity="right">
+            android:textSize="50sp"
+            android:text="0"
+            android:singleLine="true"
+            android:scrollHorizontally="true"
+            android:paddingRight="10dp"
+            android:paddingLeft="10dp"
 
-            <TextView
-                android:id="@+id/displayView"
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
-                android:textSize="50sp"
-                android:layout_gravity="right"
-                android:gravity="bottom|right"
-                android:text="0"
-                android:layout_marginTop="?attr/actionBarSize"
-                android:singleLine="true"
-                android:scrollHorizontally="true"
-                android:ellipsize="end"
-                />
-
-        </LinearLayout>
+            android:gravity="right|bottom" />
     </HorizontalScrollView>
 
     <RelativeLayout
         android:layout_width="fill_parent"
         android:layout_height="0dp"
-        android:layout_weight="2">
+        android:layout_weight=".75">
         
         <LinearLayout
             android:id="@+id/butLayer1"

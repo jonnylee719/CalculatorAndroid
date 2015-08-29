@@ -1,12 +1,20 @@
 package com.simplea.jonnylee.calculator;
 
 import android.app.Activity;
+import android.content.Context;
+import android.graphics.Rect;
 import android.net.Uri;
 import android.os.Bundle;
 import android.support.v4.app.Fragment;
+import android.util.AttributeSet;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
+import android.widget.Button;
+import android.widget.TextView;
+
+import java.math.BigDecimal;
+import java.text.AttributedCharacterIterator;
 
 
 /**
@@ -101,7 +109,12 @@ public class CalViewFragment extends Fragment {
         void cancelButClicked(View button);
         void equalButClicked(View button);
         void negButClicked(View button);
+        void onLongClickDel();
+        void dpButClicked(View button);
+        void openCalHistoryFragment(View textView);
     }
+
+
 
 
 }
