@@ -34,15 +34,15 @@ public class CalViewFragment extends Fragment implements Serializable {
     // the fragment initialization parameters, e.g. ARG_ITEM_NUMBER
     public static final String EQUATION_POSITION = "com.simplea.jonnylee.calculator.equation_position";
     private static final String TAG = "CalViewFragment";
-    private static final String TEXT_IN_DISPLAY_KEY = "textInDisplayKey";
-    private static final String LAST_EQUATION_DISPLAY_KEY = "lastEquationDisplayKey";
 
 
     // TODO: Rename and change types of parameters
     private OnFragmentInteractionListener mListener;
     public TextView displayView;
-    public String textInDisplay;
-    public String lastEquationDisplay;
+    public TextView lastEquationView;
+
+    public String textInDisplay = "";
+    public String lastEquationDisplay = "";
 
     // TODO: Rename and change types and number of parameters
     public static CalViewFragment newInstance() {
@@ -57,48 +57,38 @@ public class CalViewFragment extends Fragment implements Serializable {
 
     @Override
     public void onSaveInstanceState(Bundle savedInstanceState){
+        Log.d(TAG, "executes onSaveInstanceSate()");
         super.onSaveInstanceState(savedInstanceState);
-
-        //Put textInDisplay in bundle
-        savedInstanceState.putString(TEXT_IN_DISPLAY_KEY, textInDisplay);
-        savedInstanceState.putString(LAST_EQUATION_DISPLAY_KEY, lastEquationDisplay);
-
-        Log.d(TAG, "textInDisplay is: " + textInDisplay);
-        Log.d(TAG, "lastEquationDisplay is: " + lastEquationDisplay);
     }
 
     @Override
     public void onViewStateRestored(Bundle savedInstanceState){
+        Log.d(TAG, "executes onViewStateRestored()");
         super.onViewStateRestored(savedInstanceState);
-        // This method is called after onActivityCreated(Bundle) and before onStart()
-        if(savedInstanceState != null){
-            textInDisplay = savedInstanceState.getString(TEXT_IN_DISPLAY_KEY);
-            View view = getView();
-            TextView displayView = (TextView)view.findViewById(R.id.displayView);
-            displayView.setText(textInDisplay);
+        Log.i(TAG, "textInDisplay is: " + textInDisplay);
+        Log.i(TAG, "lastEquationDisplay is: " + lastEquationDisplay);
 
-            lastEquationDisplay = savedInstanceState.getString(LAST_EQUATION_DISPLAY_KEY);
-            TextView lastEquationView = (TextView)view.findViewById(R.id.lastEquatView);
-            lastEquationView.setText(lastEquationDisplay);
-        }
     }
 
     @Override
     public void onCreate(Bundle savedInstanceState){
         super.onCreate(savedInstanceState);
-        Log.d(TAG, "executes onCreate()");
+        Log.i(TAG, "executes onCreate()");
     }
 
     @Override
     public View onCreateView(LayoutInflater inflater, ViewGroup container,
                              Bundle savedInstanceState) {
+        Log.d(TAG, "executes onCreateView()");
         super.onCreateView(inflater, container, savedInstanceState);
         // Inflate the layout for this fragment
         View view = inflater.inflate(R.layout.fragment_cal_view, container, false);
-
-        //Set displayView 0 as default
-        TextView displayView = (TextView)view.findViewById(R.id.displayView);
+        lastEquationView = (TextView)view.findViewById(R.id.lastEquatView);
+        displayView = (TextView)view.findViewById(R.id.displayView);
         displayView.setText("0");
+        lastEquationView.setText("");
+
+
 
         Button delButton = (Button) view.findViewById(R.id.delBut);
         delButton.setOnLongClickListener(new View.OnLongClickListener() {
@@ -108,33 +98,33 @@ public class CalViewFragment extends Fragment implements Serializable {
                 return false;
             }
         });
-
-        Log.d(TAG, "onCreateView executed");
         return view;
     }
 
     @Override
     public void onActivityCreated(Bundle savedInstanceState){
         super.onActivityCreated(savedInstanceState);
-        Log.d(TAG, "executes onActivityCreated()");
+        Log.i(TAG, "executes onActivityCreated()");
+
     }
 
     @Override
     public void onStart(){
         super.onStart();
-        Log.d(TAG, "executes onStart()");
+        Log.i(TAG, "executes onStart()");
     }
 
     @Override
     public void onResume(){
         super.onResume();
-        Log.d(TAG, "executes onResume()");
+        Log.i(TAG, "executes onResume()");
+        mListener.restoreCalViewText();
     }
 
     @Override
     public void onStop(){
         super.onStop();
-        Log.d(TAG, "executes onStop()");
+        Log.i(TAG, "executes onStop()");
 
         //Get the text in displayView and lastEquationView before calViewFragment's view get destroyed
         View view = getView();
@@ -149,7 +139,7 @@ public class CalViewFragment extends Fragment implements Serializable {
     @Override
     public void onDestroyView(){
         super.onDestroyView();
-        Log.d(TAG, "executes onDestroyView()");
+        Log.i(TAG, "executes onDestroyView()");
     }
 
     @Override
@@ -193,6 +183,7 @@ public class CalViewFragment extends Fragment implements Serializable {
         //CalView view setup
         void onLongClickDel();
         void openCalHistoryListFragment(View textView);
+        void restoreCalViewText();
     }
 
 

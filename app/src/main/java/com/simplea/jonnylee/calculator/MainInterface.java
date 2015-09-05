@@ -61,13 +61,17 @@ public class MainInterface extends FragmentActivity implements CalViewFragment.O
     private String OPER_ENTERED_KEY = "operEnteredKey";
     private String CAL_HIS_LIST_KEY = "calHisListKey";
     private String CAL_MODEL_TOTAL_KEY = "calModelTotalKey";
+    private String TEXT_IN_DISPLAY_KEY = "textInDisplayKey";
+    private String LAST_EQUATION_IN_DISPLAY_KEY = "lastEquationInDisplayKey";
 
     //Values to be saved in bundle at onSaveInstanceState
     private String calModelTotal;
     private ArrayList<Equation> calHistoryList;
-
-
     private DecimalFormat numberFormatter;
+
+    //Strings that store the last current text in displayView and lastEquationView in CalViewFragment
+    private String textInDisplay = "";
+    private String lastEquationInDisplay = "";
 
     //States that the controller can be in:
     //0 = no number entered yet
@@ -80,7 +84,23 @@ public class MainInterface extends FragmentActivity implements CalViewFragment.O
 
     @Override
     protected void onSaveInstanceState(Bundle savedInstanceState){
+        Log.i(TAG, "executes onSaveInstanceState()");
+        identifyFragment();
         super.onSaveInstanceState(savedInstanceState);
+        //If it is in CalViewFragment, save the current text in CalViewFragment
+        FragmentManager fragmentManager = getSupportFragmentManager();
+        Fragment currentFragment = fragmentManager.findFragmentById(R.id.fragment_container);
+        if(currentFragment.getTag().equals(CAL_VIEW_KEY)){
+            //Save current text in displays in CalViewFragment
+            TextView displayView = (TextView)findViewById(R.id.displayView);
+            TextView lastEquationView = (TextView)findViewById(R.id.lastEquatView);
+
+            textInDisplay = (String) displayView.getText();
+            lastEquationInDisplay = (String) lastEquationView.getText();
+            Log.d(TAG, "textInDisplay is: " + textInDisplay);
+            Log.d(TAG, "lastEquationInDisplay is: " + lastEquationInDisplay);
+        }
+
         //saving numbers and operators
         savedInstanceState.putString(NUM_1_KEY, num1);
         savedInstanceState.putString(NUM_2_KEY, num2);
@@ -91,6 +111,8 @@ public class MainInterface extends FragmentActivity implements CalViewFragment.O
         savedInstanceState.putBoolean(NUM_1_ENTERED_KEY, num1Entered);
         savedInstanceState.putBoolean(NUM_2_ENTERED_KEY, num2Entered);
         savedInstanceState.putBoolean(OPER_ENTERED_KEY, operEntered);
+        savedInstanceState.putString(TEXT_IN_DISPLAY_KEY, textInDisplay);
+        savedInstanceState.putString(LAST_EQUATION_IN_DISPLAY_KEY, lastEquationInDisplay);
 
         //saving CalHisList
         calHistoryList = calHis.getEquationList();
@@ -101,6 +123,7 @@ public class MainInterface extends FragmentActivity implements CalViewFragment.O
 
     @Override
     protected void onRestoreInstanceState(Bundle savedInstanceState){
+        Log.i(TAG, "executes onRestoreInstanceState()");
         //Restoring the numbers
         num1 = savedInstanceState.getString(NUM_1_KEY);
         num2 = savedInstanceState.getString(NUM_2_KEY);
@@ -111,6 +134,8 @@ public class MainInterface extends FragmentActivity implements CalViewFragment.O
         num1Entered = savedInstanceState.getBoolean(NUM_1_ENTERED_KEY);
         num2Entered = savedInstanceState.getBoolean(NUM_2_ENTERED_KEY);
         operEntered = savedInstanceState.getBoolean(OPER_ENTERED_KEY);
+        textInDisplay = savedInstanceState.getString(TEXT_IN_DISPLAY_KEY);
+        lastEquationInDisplay = savedInstanceState.getString(LAST_EQUATION_IN_DISPLAY_KEY);
 
         //Restore CalHisList
         calHistoryList = (ArrayList<Equation>) savedInstanceState.getSerializable(CAL_HIS_LIST_KEY);
@@ -163,12 +188,15 @@ public class MainInterface extends FragmentActivity implements CalViewFragment.O
         num1 = "";
         num1Entered = false;
         negNum1 = false;
+        formattedNum1 = "";
         num2 = "";
         num2Entered = false;
         negNum2 = false;
+        formattedNum2 = "";
         crtOper = "";
         operEntered = false;
         result = "";
+        formattedResult = "";
         display.setText("0");
     }
 
@@ -257,7 +285,7 @@ public class MainInterface extends FragmentActivity implements CalViewFragment.O
                 formattedString = numberFormatter.format(bd);
             }
         }
-
+/*
         if(numIn.equals(num1)){
             formattedNum1 = formattedString;
         }
@@ -267,7 +295,7 @@ public class MainInterface extends FragmentActivity implements CalViewFragment.O
         else if(numIn.equals(result)){
             formattedResult = formattedString;
         }
-
+*/
         return formattedString;
 
     }
@@ -744,14 +772,29 @@ public class MainInterface extends FragmentActivity implements CalViewFragment.O
         Equation retrievedEquation = calHis.getEquation(equationPosition);
         Log.d(TAG, "Retrieved equation: " + retrievedEquation.getEquation());
 
-        onLongClickDel();
-        Log.d(TAG, "Current Values: ");
-        Log.d(TAG, "Num1: " + num1);
-        Log.d(TAG, "Num2: " + num2);
-        Log.d(TAG, "crtOper: " + crtOper);
+        num1 = "";
+        num2 = "";
+        negNum1 = false;
+        negNum2 = false;
+        formattedNum1 = "";
+        formattedNum2 = "";
+        operEntered = false;
+        num1Entered = false;
+        num2Entered = false;
+        crtOper = "";
+        result = "";
+        formattedResult = "";
+        Log.i(TAG, "formattedNum1 is: " + formattedNum1);
+        Log.i(TAG, "formattedNum2 is: " + formattedNum2);
+        Log.i(TAG, "Current Values: ");
+        Log.i(TAG, "Num1: " + num1);
+        Log.i(TAG, "Num2: " + num2);
+        Log.i(TAG, "crtOper: " + crtOper);
+        Log.i(TAG, "result: " + result);
 
         String retrievedNum1 = retrievedEquation.getNum1();
         String retrievedNum2 = retrievedEquation.getNum2();
+        crtOper = retrievedEquation.getOperator();
 
         if(retrievedNum1.contains("-")){
             num1 = retrievedNum1.substring(1);
@@ -760,8 +803,6 @@ public class MainInterface extends FragmentActivity implements CalViewFragment.O
         else {
             num1 = retrievedNum1;
         }
-        Log.d(TAG, "Num1 = " + num1);
-        num1Entered = true;
 
         if(retrievedNum2.contains("-")){
             num2 = retrievedNum2.substring(1);
@@ -770,18 +811,27 @@ public class MainInterface extends FragmentActivity implements CalViewFragment.O
         else {
             num2 = retrievedNum2;
         }
-        Log.d(TAG, "Num2 = " + num2);
+        Log.i(TAG, "formattedNum1 is: " + formattedNum1);
+        Log.i(TAG, "formattedNum2 is: " + formattedNum2);
+        Log.i(TAG, "crtOper = " + crtOper);
+        Log.i(TAG, "Num1 = " + num1);
+        Log.i(TAG, "Num2 = " + num2);
+
+        num1Entered = true;
         num2Entered = true;
-
-        crtOper = retrievedEquation.getOperator();
         operEntered = true;
-        Log.d(TAG, "crtOper = " + crtOper);
 
-
+        //Set display as retrieved equation and display lastEquation
         TextView display = (TextView) findViewById(R.id.displayView);
-        Log.d(TAG, "displayView's text is: " + display.getText());
+        Log.i(TAG, "displayView's text is: " + display.getText());
         display.setText(formatNum(num1, negNum1) + crtOper + formatNum(num2, negNum2));
-        Log.d(TAG, "displayView's text is: " + display.getText());
+        Log.i(TAG, "displayView's text is: " + display.getText());
+
+        Log.i(TAG, "formattedNum1 is: " + formattedNum1);
+        Log.i(TAG, "formattedNum2 is: " + formattedNum2);
+
+        TextView lastEquationDisplay = (TextView) findViewById(R.id.lastEquatView);
+        lastEquationDisplay.setText("");
     }
 
     @Override
@@ -804,15 +854,19 @@ public class MainInterface extends FragmentActivity implements CalViewFragment.O
 
     public void switchBackCalViewFragment() {
         FragmentManager fragmentManager = getSupportFragmentManager();
-
-        //if calViewFragment is not empty, reuse it but give it the equation position
         fragmentManager.popBackStack();
         fragmentManager.executePendingTransactions();
-        identifyFragment();
     }
 
     @Override
     public void openCalHistoryListFragment(View view){
+        //Save current text in displays in CalViewFragment
+        TextView displayView = (TextView)findViewById(R.id.displayView);
+        TextView lastEquationView = (TextView)findViewById(R.id.lastEquatView);
+
+        textInDisplay = (String) displayView.getText();
+        lastEquationInDisplay = (String) lastEquationView.getText();
+
         //Create CalHistoryListFragment
         calHistoryListFragment = CalHistoryListFragment.newInstance();
 
@@ -829,6 +883,22 @@ public class MainInterface extends FragmentActivity implements CalViewFragment.O
         identifyFragment(); // right now it's showing the current fragment is still calView but the screen shows it's calHistory fragment
     }
 
+    @Override
+    public void restoreCalViewText() {
+        Log.d(TAG, "executes restoreCalViewText()");
+        TextView displayView = (TextView)findViewById(R.id.displayView);
+        TextView lastEquationView = (TextView)findViewById(R.id.lastEquatView);
+
+        Log.d(TAG, "textInDisplay is: " + textInDisplay);
+        Log.d(TAG, "lastEquationInDisplay is: " + lastEquationInDisplay);
+
+        if(!textInDisplay.equals("") || !lastEquationInDisplay.equals("")) {
+            displayView.setText(textInDisplay);
+            lastEquationView.setText(lastEquationInDisplay);
+            textInDisplay = "";
+            lastEquationInDisplay = "";
+        }
+    }
 
 
 }

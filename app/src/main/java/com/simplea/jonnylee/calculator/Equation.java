@@ -3,6 +3,7 @@ package com.simplea.jonnylee.calculator;
 import android.util.Log;
 import android.widget.TextView;
 
+import java.io.Serializable;
 import java.lang.reflect.Array;
 import java.util.Arrays;
 import java.util.List;
@@ -10,7 +11,7 @@ import java.util.List;
 /**
  * Created by Jonathan on 25/8/15.
  */
-public class Equation {
+public class Equation implements Serializable{
     String num1;
     String formattedNum1;
     String num2;
