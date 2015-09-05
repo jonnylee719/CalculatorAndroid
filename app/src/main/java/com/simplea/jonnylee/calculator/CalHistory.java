@@ -25,6 +25,8 @@ public class CalHistory {
         return sCalHistory;
     }
 
+    public void setEquationList(ArrayList<Equation> oldList){equationList = oldList;}
+
     public ArrayList<Equation> getEquationList(){
         return equationList;
     }
@@ -37,5 +39,9 @@ public class CalHistory {
     public Equation getEquation(int equaIndex){
         Equation retriEqua = equationList.get(equaIndex);
         return retriEqua;
+    }
+
+    public void clearHistory(){
+        equationList.clear();
     }
 }

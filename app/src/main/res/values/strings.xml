@@ -19,7 +19,13 @@
     <string name="multiply">*</string>
     <string name="divide">/</string>
     <string name="equal">=</string>
-    <string name="cancel">CE</string>
+    <string name="ce">CE</string>
+    <string name="title_activity_cal_history">CalHistoryActivity</string>
+
+    <string name="clear_history">CLEAR HISTORY</string>
+    <string name="cancel">CANCEL</string>
+
+    <string name="butLayerWeightLand">0.2</string>
 
 
 

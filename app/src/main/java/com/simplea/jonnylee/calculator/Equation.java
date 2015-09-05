@@ -1,5 +1,12 @@
 package com.simplea.jonnylee.calculator;
 
+import android.util.Log;
+import android.widget.TextView;
+
+import java.lang.reflect.Array;
+import java.util.Arrays;
+import java.util.List;
+
 /**
  * Created by Jonathan on 25/8/15.
  */
@@ -11,6 +18,7 @@ public class Equation {
     String operator;
     String result;
     String formattedResult;
+    private static final String TAG = "Equation";
 
 
     public Equation(String numA, String formattedNumA, String numB, String formattedNumB, String answer, String formattedAns, String oper){
@@ -21,7 +29,7 @@ public class Equation {
         operator = oper;
         result = answer;
         formattedResult = formattedAns;
-    }
+        }
 
     public String getEquation(){
         String equation;
@@ -33,12 +41,18 @@ public class Equation {
         return num1;
     }
 
+    public String getFormattedNum1(){return formattedNum1;}
+
+    public String getFormattedNum2(){return formattedNum2;}
+
+    public String getFormattedResult(){return formattedResult;}
+
     public String getNum2(){
-        return num1;
+        return num2;
     }
 
     public String getResult(){
-        return num1;
+        return result;
     }
 
     public String getOperator(){

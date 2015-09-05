@@ -36,7 +36,6 @@
         android:layout_width="fill_parent"
         android:layout_height="wrap_content"
         android:fillViewport="true"
-        android:layout_margin="5dp"
         android:scrollbars="none">
 
         <TextView
@@ -48,133 +47,140 @@
             android:scrollHorizontally="true"
             android:paddingRight="10dp"
             android:paddingLeft="10dp"
-
             android:gravity="right|bottom" />
     </HorizontalScrollView>
 
-    <RelativeLayout
+    <LinearLayout
         android:layout_width="fill_parent"
         android:layout_height="0dp"
-        android:layout_weight=".75">
-        
+        android:layout_weight=".75"
+        android:weightSum="1"
+        android:orientation="horizontal"
+        android:background="@color/cyan_dark">
+
+        <View
+            android:layout_width="0dp"
+            android:layout_height="fill_parent"
+            android:layout_weight="0.2"/>
+
         <LinearLayout
             android:id="@+id/butLayer1"
-            android:layout_width="@dimen/butLayerWidth"
+            android:layout_width="0dp"
+            android:layout_weight="@string/butLayerWeightLand"
             android:layout_height="fill_parent"
             android:orientation="vertical"
-            android:layout_alignParentLeft="true">
+            android:weightSum="1">
 
             <Button
                 android:layout_width="fill_parent"
                 android:layout_height="0dp"
-                android:layout_weight="1"
+                android:layout_weight="0.2"
                 android:textSize="30sp"
-                android:background="@color/cyan_dark"
+                android:background="@android:color/transparent"
                 />
 
             <Button
                 android:layout_width="fill_parent"
                 android:layout_height="0dp"
-                android:layout_weight="1"
+                android:layout_weight="0.2"
                 android:text="7"
                 android:textSize="30sp"
                 android:textColor="@color/white"
-                android:background="@color/cyan_dark"
                 android:onClick="numButClicked"
+                android:background="@android:color/transparent"
                 />
 
             <Button
                 android:layout_width="fill_parent"
                 android:layout_height="0dp"
-                android:layout_weight="1"
+                android:layout_weight="0.2"
                 android:text="4"
                 android:textSize="30sp"
                 android:textColor="@color/white"
-                android:background="@color/cyan_dark"
                 android:onClick="numButClicked"
+                android:background="@android:color/transparent"
                 />
 
             <Button
                 android:layout_width="fill_parent"
                 android:layout_height="0dp"
-                android:layout_weight="1"
+                android:layout_weight="0.2"
                 android:text="1"
                 android:textSize="30sp"
                 android:textColor="@color/white"
-                android:background="@color/cyan_dark"
                 android:onClick="numButClicked"
+                android:background="@android:color/transparent"
                 />
 
             <Button
                 android:layout_width="fill_parent"
                 android:layout_height="0dp"
-                android:layout_weight="1"
+                android:layout_weight="0.2"
                 android:text="."
                 android:textSize="30sp"
                 android:textColor="@color/white"
-                android:background="@color/cyan_dark"
                 android:onClick="dpButClicked"
-                android:singleLine="false" />
+                android:background="@android:color/transparent"/>
 
         </LinearLayout>
 
         <LinearLayout
             android:id="@+id/butLayer2"
-            android:layout_width="@dimen/butLayerWidth"
+            android:layout_width="0dp"
+            android:layout_weight="@string/butLayerWeightLand"
             android:layout_height="fill_parent"
             android:orientation="vertical"
-            android:layout_toRightOf="@id/butLayer1"
-            android:background="@color/cyan_dark">
+            android:weightSum="1">
 
             <Button
                 android:layout_width="fill_parent"
                 android:layout_height="0dp"
-                android:layout_weight="1"
+                android:layout_weight="0.2"
                 android:textSize="30sp"
-                android:background="@color/cyan_dark"
+                android:background="@android:color/transparent"
                 />
 
             <Button
                 android:layout_width="fill_parent"
                 android:layout_height="0dp"
-                android:layout_weight="1"
+                android:layout_weight="0.2"
                 android:text="8"
                 android:textSize="30sp"
                 android:textColor="@color/white"
-                android:background="@color/cyan_dark"
+                android:background="@android:color/transparent"
                 android:onClick="numButClicked"
                 />
 
             <Button
                 android:layout_width="fill_parent"
                 android:layout_height="0dp"
-                android:layout_weight="1"
+                android:layout_weight="0.2"
                 android:text="5"
                 android:textSize="30sp"
                 android:textColor="@color/white"
-                android:background="@color/cyan_dark"
+                android:background="@android:color/transparent"
                 android:onClick="numButClicked"
                 />
 
             <Button
                 android:layout_width="fill_parent"
                 android:layout_height="0dp"
-                android:layout_weight="1"
+                android:layout_weight="0.2"
                 android:text="2"
                 android:textSize="30sp"
                 android:textColor="@color/white"
-                android:background="@color/cyan_dark"
+                android:background="@android:color/transparent"
                 android:onClick="numButClicked"
                 />
 
             <Button
                 android:layout_width="fill_parent"
                 android:layout_height="0dp"
-                android:layout_weight="1"
+                android:layout_weight="0.2"
                 android:text="0"
                 android:textSize="30sp"
                 android:textColor="@color/white"
-                android:background="@color/cyan_dark"
+                android:background="@android:color/transparent"
                 android:onClick="numButClicked"
                 />
 
@@ -183,64 +189,65 @@
 
         <LinearLayout
             android:id="@+id/butLayer3"
-            android:layout_width="@dimen/butLayerWidth"
+            android:layout_width="0dp"
+            android:layout_weight="@string/butLayerWeightLand"
             android:layout_height="fill_parent"
             android:orientation="vertical"
-            android:layout_toRightOf="@id/butLayer2"
-            android:background="@color/cyan_dark">
+            android:weightSum="1"
+            android:background="@android:color/transparent">
 
             <Button
                 android:layout_width="fill_parent"
                 android:layout_height="0dp"
-                android:layout_weight="1"
+                android:layout_weight="0.2"
                 android:text="+/-"
                 android:textSize="30sp"
                 android:textColor="@color/white"
-                android:background="@color/cyan_dark"
+                android:background="@android:color/transparent"
                 android:onClick="negButClicked"
                 />
 
             <Button
                 android:layout_width="fill_parent"
                 android:layout_height="0dp"
-                android:layout_weight="1"
+                android:layout_weight="0.2"
                 android:text="9"
                 android:textSize="30sp"
                 android:textColor="@color/white"
-                android:background="@color/cyan_dark"
+                android:background="@android:color/transparent"
                 android:onClick="numButClicked"
                 />
 
             <Button
                 android:layout_width="fill_parent"
                 android:layout_height="0dp"
-                android:layout_weight="1"
+                android:layout_weight="0.2"
                 android:text="6"
                 android:textSize="30sp"
                 android:textColor="@color/white"
-                android:background="@color/cyan_dark"
+                android:background="@android:color/transparent"
                 android:onClick="numButClicked"
                 />
 
             <Button
                 android:layout_width="fill_parent"
                 android:layout_height="0dp"
-                android:layout_weight="1"
+                android:layout_weight="0.2"
                 android:text="3"
                 android:textSize="30sp"
                 android:textColor="@color/white"
-                android:background="@color/cyan_dark"
+                android:background="@android:color/transparent"
                 android:onClick="numButClicked"
                 />
 
             <Button
                 android:layout_width="fill_parent"
                 android:layout_height="0dp"
-                android:layout_weight="1"
+                android:layout_weight="0.2"
                 android:text="="
                 android:textSize="30sp"
                 android:textColor="@color/white"
-                android:background="@color/cyan_dark"
+                android:background="@android:color/transparent"
                 android:onClick="equalButClicked"
                 />
 
@@ -249,72 +256,70 @@
         <LinearLayout
             android:id="@+id/butLayer4"
             android:layout_height="fill_parent"
-            android:layout_width="fill_parent"
+            android:layout_width="0dp"
+            android:layout_weight="@string/butLayerWeightLand"
             android:orientation="vertical"
-            android:layout_toRightOf="@id/butLayer3"
-            android:layout_toEndOf="@id/butLayer3"
-            android:layout_alignParentRight="true"
-            android:background="@color/cyan_dark"
+            android:background="@android:color/transparent"
+            android:weightSum="1"
             >
 
             <Button
                 android:layout_width="fill_parent"
                 android:layout_height="0dp"
-                android:layout_weight="1"
+                android:layout_weight="0.2"
                 android:text="+"
                 android:textSize="30sp"
                 android:textColor="@color/white"
-                android:background="@color/cyan_dark"
+                android:background="@android:color/transparent"
                 android:onClick="operButClicked"
                 />
 
             <Button
                 android:layout_width="fill_parent"
                 android:layout_height="0dp"
-                android:layout_weight="1"
+                android:layout_weight="0.2"
                 android:text="-"
                 android:textSize="30sp"
                 android:textColor="@color/white"
-                android:background="@color/cyan_dark"
+                android:background="@android:color/transparent"
                 android:onClick="operButClicked"
                 />
 
             <Button
                 android:layout_width="fill_parent"
                 android:layout_height="0dp"
-                android:layout_weight="1"
+                android:layout_weight="0.2"
                 android:text="*"
                 android:textSize="30sp"
                 android:textColor="@color/white"
-                android:background="@color/cyan_dark"
+                android:background="@android:color/transparent"
                 android:onClick="operButClicked"
                 />
 
             <Button
                 android:layout_width="fill_parent"
                 android:layout_height="0dp"
-                android:layout_weight="1"
+                android:layout_weight="0.2"
                 android:text="/"
                 android:textSize="30sp"
                 android:textColor="@color/white"
-                android:background="@color/cyan_dark"
-                android:onClick="operButClicked"
-                android:singleLine="false" />
+                android:background="@android:color/transparent"
+                android:onClick="operButClicked"/>
 
             <Button
                 android:id="@+id/delBut"
                 android:layout_width="fill_parent"
                 android:layout_height="0dp"
-                android:layout_weight="1"
+                android:layout_weight="0.2"
                 android:text="DEL"
                 android:textSize="30sp"
                 android:textColor="@color/white"
-                android:background="@color/cyan_dark"
+                android:background="@android:color/transparent"
                 android:onClick="cancelButClicked"
                 android:longClickable="true" />
 
         </LinearLayout>
 
-    </RelativeLayout>
+    </LinearLayout>
 
 </LinearLayout>

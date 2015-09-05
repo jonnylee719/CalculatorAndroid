@@ -2,6 +2,7 @@ package com.simplea.jonnylee.calculator;
 
 import android.util.Log;
 
+import java.io.Serializable;
 import java.math.BigDecimal;
 import java.math.MathContext;
 import java.math.RoundingMode;
@@ -13,7 +14,7 @@ import java.math.RoundingMode;
  * @version 1.0 08/08/2015
  */
 
-public class CalModel {
+public class CalModel{
     private static final int INITIAL_VALUE = 0;
     private BigDecimal total;
     private String TAG = "CalModel";
@@ -58,7 +59,7 @@ public class CalModel {
     }
 
     public BigDecimal stringToNum(String numString){
-        Log.d(TAG, "stringToNum numString is: " + numString);
+        //Log.d(TAG, "stringToNum numString is: " + numString);
         BigDecimal num = new BigDecimal(numString, context);
         return num;
     }

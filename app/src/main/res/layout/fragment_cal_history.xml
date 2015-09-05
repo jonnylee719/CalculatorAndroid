@@ -1,0 +1,61 @@
+<FrameLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:tools="http://schemas.android.com/tools" android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    tools:context="com.simplea.jonnylee.calculator.CalHistoryListFragment"
+    android:id="@+id/root_view">
+
+
+    <LinearLayout
+        android:layout_width="match_parent"
+        android:layout_height="match_parent"
+        android:orientation="vertical"
+        android:weightSum="1"
+        android:id="@+id/background_frame"
+        >
+
+
+
+        <ListView
+            android:layout_width="match_parent"
+            android:layout_height="0dp"
+            android:layout_weight="0.9"
+            android:id="@+id/list"
+        />
+
+        <LinearLayout
+            android:layout_width="match_parent"
+            android:layout_height="0dp"
+            android:layout_weight="0.1"
+            android:orientation="horizontal"
+            android:weightSum="1">
+
+            <Button
+                android:layout_width="0dp"
+                android:layout_height="match_parent"
+                android:layout_weight="0.5"
+                android:id="@+id/clear_his_button"
+                android:onClick="clearCalHistory"
+                android:textSize="15sp"
+                android:text="@string/clear_history"
+                />
+
+            <Button
+                android:layout_width="0dp"
+                android:layout_height="match_parent"
+                android:layout_weight="0.5"
+                android:id="@+id/cancel_button"
+                android:onClick="goBackCalView"
+                android:textSize="15sp"
+                android:text="@string/cancel"
+                />
+
+        </LinearLayout>
+
+
+
+
+
+
+    </LinearLayout>
+
+</FrameLayout>

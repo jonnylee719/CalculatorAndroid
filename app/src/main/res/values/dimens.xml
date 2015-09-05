@@ -4,6 +4,6 @@
     <dimen name="activity_vertical_margin">16dp</dimen>
 
     <!-- Configurations for frag view -->
-    <dimen name="butLayerWidth">90dp</dimen>"
+    <dimen name="butLayerWidth">90dp</dimen>
 
 </resources>

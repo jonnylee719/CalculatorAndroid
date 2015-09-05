@@ -20,7 +20,8 @@
     <string name="multiply">*</string>
     <string name="divide">/</string>
     <string name="equal">=</string>
-    <string name="cancel">CE</string>
+    <string name="ce">CE</string>
 
-
+    <string name="clear_history">BORRA HISTORIA</string>
+    <string name="cancel">CANCELA</string>
 </resources>
