@@ -84,7 +84,7 @@ public class MainInterface extends FragmentActivity implements CalViewFragment.O
 
     @Override
     protected void onSaveInstanceState(Bundle savedInstanceState){
-        Log.i(TAG, "executes onSaveInstanceState()");
+        //Log.i(TAG, "executes onSaveInstanceState()");
         identifyFragment();
         super.onSaveInstanceState(savedInstanceState);
         //If it is in CalViewFragment, save the current text in CalViewFragment
@@ -97,8 +97,8 @@ public class MainInterface extends FragmentActivity implements CalViewFragment.O
 
             textInDisplay = (String) displayView.getText();
             lastEquationInDisplay = (String) lastEquationView.getText();
-            Log.d(TAG, "textInDisplay is: " + textInDisplay);
-            Log.d(TAG, "lastEquationInDisplay is: " + lastEquationInDisplay);
+            //Log.d(TAG, "textInDisplay is: " + textInDisplay);
+            //Log.d(TAG, "lastEquationInDisplay is: " + lastEquationInDisplay);
         }
 
         //saving numbers and operators
@@ -123,7 +123,7 @@ public class MainInterface extends FragmentActivity implements CalViewFragment.O
 
     @Override
     protected void onRestoreInstanceState(Bundle savedInstanceState){
-        Log.i(TAG, "executes onRestoreInstanceState()");
+        //Log.i(TAG, "executes onRestoreInstanceState()");
         //Restoring the numbers
         num1 = savedInstanceState.getString(NUM_1_KEY);
         num2 = savedInstanceState.getString(NUM_2_KEY);
@@ -534,7 +534,7 @@ public class MainInterface extends FragmentActivity implements CalViewFragment.O
 
     @Override
     public void equalButClicked(View button){
-        Log.d(TAG, "executes equalButClicked()");
+        //Log.d(TAG, "executes equalButClicked()");
         TextView display = (TextView) findViewById(R.id.displayView);
         //4 scenarios:
         //1) before num1Entered
@@ -586,7 +586,7 @@ public class MainInterface extends FragmentActivity implements CalViewFragment.O
     }
 
     public String doOperation(String operator){
-        Log.d(TAG, "executes doOperation()");
+        //Log.d(TAG, "executes doOperation()");
         model.setTotal(negNumConvert(num1, negNum1));
         switch (operator){
             case "+":
@@ -629,7 +629,7 @@ public class MainInterface extends FragmentActivity implements CalViewFragment.O
     public void cancelButClicked(View view){
         TextView display = (TextView) findViewById(R.id.displayView);
 
-        Log.d(TAG, "cancelBut is clicked.");
+        //Log.d(TAG, "cancelBut is clicked.");
         //4 scenarios:
         //1) before num1Entered
         //2) after num1Entered + before operEntered
@@ -640,7 +640,7 @@ public class MainInterface extends FragmentActivity implements CalViewFragment.O
             onLongClickDel();          //deletes everything and setDisplay to "0"
         }
         else if(num1Entered && !operEntered){
-            Log.d(TAG, "cancel But is clicked and crtOper is not entered yet");
+            //Log.d(TAG, "cancel But is clicked and crtOper is not entered yet");
             if(num1.length() > 20){                         //Length of textview limits the number of digits the user can see
                 num1 = num1.substring(0, 20);
             }
@@ -660,7 +660,7 @@ public class MainInterface extends FragmentActivity implements CalViewFragment.O
             }
         }
         else if(operEntered && !num2Entered){
-            Log.d(TAG, "crtOper is: " + crtOper);
+            //Log.d(TAG, "crtOper is: " + crtOper);
             if(negNum2){
                 negNum2 = false;
                 display.setText(formatInputNum(num1, negNum1) + crtOper);
@@ -671,7 +671,7 @@ public class MainInterface extends FragmentActivity implements CalViewFragment.O
                 operEntered = false;
                 display.setText(formatInputNum(num1, negNum1));
                 scrollDisplayToEnd();
-                Log.d(TAG, "crtOper is deleted.");
+                //Log.d(TAG, "crtOper is deleted.");
             }
         }
         else if(num2Entered){
@@ -731,7 +731,7 @@ public class MainInterface extends FragmentActivity implements CalViewFragment.O
                 //Log.d(TAG, "dpButClicked() num1 is entered");
                 if(!num1.contains(".")){
                     num1 = num1 + ".";
-                    Log.d(TAG, "dpButClicked() num1 is entered but does not contain dp, num1 is formated as: " + num1);
+                    //Log.d(TAG, "dpButClicked() num1 is entered but does not contain dp, num1 is formated as: " + num1);
                 }
                 else{
                     //Do nothing
@@ -761,7 +761,7 @@ public class MainInterface extends FragmentActivity implements CalViewFragment.O
     public void identifyFragment(){
         FragmentManager fragmentManager = getSupportFragmentManager();
         Fragment currentFragment = fragmentManager.findFragmentById(R.id.fragment_container);
-        Log.d(TAG, "The current fragment is: " + currentFragment + currentFragment.getTag());
+        //Log.d(TAG, "The current fragment is: " + currentFragment + currentFragment.getTag());
 
     }
 
@@ -770,7 +770,7 @@ public class MainInterface extends FragmentActivity implements CalViewFragment.O
         switchBackCalViewFragment();
 
         Equation retrievedEquation = calHis.getEquation(equationPosition);
-        Log.d(TAG, "Retrieved equation: " + retrievedEquation.getEquation());
+        //Log.d(TAG, "Retrieved equation: " + retrievedEquation.getEquation());
 
         num1 = "";
         num2 = "";
@@ -784,13 +784,13 @@ public class MainInterface extends FragmentActivity implements CalViewFragment.O
         crtOper = "";
         result = "";
         formattedResult = "";
-        Log.i(TAG, "formattedNum1 is: " + formattedNum1);
-        Log.i(TAG, "formattedNum2 is: " + formattedNum2);
-        Log.i(TAG, "Current Values: ");
-        Log.i(TAG, "Num1: " + num1);
-        Log.i(TAG, "Num2: " + num2);
-        Log.i(TAG, "crtOper: " + crtOper);
-        Log.i(TAG, "result: " + result);
+        //Log.i(TAG, "formattedNum1 is: " + formattedNum1);
+        //Log.i(TAG, "formattedNum2 is: " + formattedNum2);
+        //Log.i(TAG, "Current Values: ");
+        //Log.i(TAG, "Num1: " + num1);
+        //Log.i(TAG, "Num2: " + num2);
+        //Log.i(TAG, "crtOper: " + crtOper);
+        //Log.i(TAG, "result: " + result);
 
         String retrievedNum1 = retrievedEquation.getNum1();
         String retrievedNum2 = retrievedEquation.getNum2();
@@ -811,11 +811,11 @@ public class MainInterface extends FragmentActivity implements CalViewFragment.O
         else {
             num2 = retrievedNum2;
         }
-        Log.i(TAG, "formattedNum1 is: " + formattedNum1);
-        Log.i(TAG, "formattedNum2 is: " + formattedNum2);
-        Log.i(TAG, "crtOper = " + crtOper);
-        Log.i(TAG, "Num1 = " + num1);
-        Log.i(TAG, "Num2 = " + num2);
+        //Log.i(TAG, "formattedNum1 is: " + formattedNum1);
+        //Log.i(TAG, "formattedNum2 is: " + formattedNum2);
+        //Log.i(TAG, "crtOper = " + crtOper);
+        //Log.i(TAG, "Num1 = " + num1);
+        //Log.i(TAG, "Num2 = " + num2);
 
         num1Entered = true;
         num2Entered = true;
@@ -823,12 +823,12 @@ public class MainInterface extends FragmentActivity implements CalViewFragment.O
 
         //Set display as retrieved equation and display lastEquation
         TextView display = (TextView) findViewById(R.id.displayView);
-        Log.i(TAG, "displayView's text is: " + display.getText());
+        //Log.i(TAG, "displayView's text is: " + display.getText());
         display.setText(formatNum(num1, negNum1) + crtOper + formatNum(num2, negNum2));
-        Log.i(TAG, "displayView's text is: " + display.getText());
+        //Log.i(TAG, "displayView's text is: " + display.getText());
 
-        Log.i(TAG, "formattedNum1 is: " + formattedNum1);
-        Log.i(TAG, "formattedNum2 is: " + formattedNum2);
+        //Log.i(TAG, "formattedNum1 is: " + formattedNum1);
+        //Log.i(TAG, "formattedNum2 is: " + formattedNum2);
 
         TextView lastEquationDisplay = (TextView) findViewById(R.id.lastEquatView);
         lastEquationDisplay.setText("");
@@ -885,12 +885,12 @@ public class MainInterface extends FragmentActivity implements CalViewFragment.O
 
     @Override
     public void restoreCalViewText() {
-        Log.d(TAG, "executes restoreCalViewText()");
+        //Log.d(TAG, "executes restoreCalViewText()");
         TextView displayView = (TextView)findViewById(R.id.displayView);
         TextView lastEquationView = (TextView)findViewById(R.id.lastEquatView);
 
-        Log.d(TAG, "textInDisplay is: " + textInDisplay);
-        Log.d(TAG, "lastEquationInDisplay is: " + lastEquationInDisplay);
+        //Log.d(TAG, "textInDisplay is: " + textInDisplay);
+        //Log.d(TAG, "lastEquationInDisplay is: " + lastEquationInDisplay);
 
         if(!textInDisplay.equals("") || !lastEquationInDisplay.equals("")) {
             displayView.setText(textInDisplay);
